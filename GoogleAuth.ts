@@ -1,9 +1,8 @@
 // Import the functions you need from the Firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-// Updated Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAxxT0jppPPBIjKSKEk7IEuStIkRDvR3rk",
     authDomain: "ojt-test-app.firebaseapp.com",
@@ -20,14 +19,12 @@ const db = getFirestore(app);
 
 const provider = new GoogleAuthProvider();
 
-// Function to check if email is institutional
+// Validate institutional email
 function isInstitutionalEmail(email) {
-    if (!email) return false;
-    const univDomain = /@neu\.edu\.ph$/;
-    return univDomain.test(email);
+    return email ? /@neu\.edu\.ph$/.test(email) : false;
 }
 
-// Function to handle Google sign-in
+// Google sign-in function
 export const signInWithGoogle = async () => {
     try {
         const result = await signInWithPopup(auth, provider);
@@ -46,9 +43,11 @@ export const signInWithGoogle = async () => {
                     role: "Student",
                 });
             }
+
             return user;
         } else {
-            console.log("Not an institutional email");
+            await signOut(auth); // Sign out invalid email users
+            alert("Please use your institutional email (@neu.edu.ph).");
             return null;
         }
     } catch (error) {
@@ -57,5 +56,14 @@ export const signInWithGoogle = async () => {
     }
 };
 
-// Export the `auth` and `db` instances
+// Logout function
+export const logOutUser = async () => {
+    try {
+        await signOut(auth);
+    } catch (error) {
+        console.error("Error during logout:", error);
+    }
+};
+
+// Export auth and db
 export { auth, db };
