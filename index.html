@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="googleauth.js" defer type="module"></script>
+    <script src="register.js" defer type="module"></script>
+    <script src="scripts.js" defer type="module"></script>
+    <title>NEU OJT APP</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <section id="login-page" class="page">
+        <div class="container">
+            <img src="./logo/logo.png" alt="NEU Logo" class="logo">
+            <h1>NEU OJT APP</h1>
+            <button id="googleSignInButton" class="google-signin">Sign in with Google</button>
+        </div>
+    </section>
+
+    <!-- Main Page -->
+    <section id="main-page" class="page hidden">
+        <div class="container">
+            <img src="./logo/logo.png" alt="NEU Logo" class="logo">
+            <h2 id="userName">Welcome</h2>
+            <p id="userEmail"></p>
+            <img id="userProfilePicture" class="profile-pic" alt="User Profile Picture">
+            <div class="button-group">
+                <button class="btn primary" onclick="navigateTo('upload-requirements')">Upload Requirements</button>
+                <button class="btn primary" onclick="navigateTo('student-info')">Enter Student Info</button>
+            </div>
+            <button class="btn secondary" onclick="logout()">Log Out</button>
+        </div>
+    </section>
+
+    <!-- Upload Requirements Page -->
+    <section id="upload-requirements" class="page hidden">
+        <div class="container">
+            <img src="./logo/logo.png" alt="NEU Logo" class="logo">
+            <h2>Upload Requirements</h2>
+            <form class="form" onsubmit="return false;">
+                <div class="upload-field">
+                    <label>Parent's Consent Form</label>
+                    <input type="file">
+                </div>
+                <div class="upload-field">
+                    <label>Medical Exam</label>
+                    <input type="file">
+                </div>
+                <div class="upload-field">
+                    <label>Psychological Exam</label>
+                    <input type="file">
+                </div>
+                <div class="upload-field">
+                    <label>Resume</label>
+                    <input type="file">
+                </div>
+                <button type="button" class="btn primary" onclick="navigateTo('main-page')">Submit</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Enter Student Info Page -->
+    <section id="student-info" class="page hidden">
+        <div class="container scrollable">
+            <img src="./logo/logo.png" alt="NEU Logo" class="logo">
+            <h2>Enter Student Info</h2>
+            <form onsubmit="return false;">
+                <div class="input-group">
+                    <label>Last Name</label>
+                    <input type="text">
+                </div>
+                <div class="input-group">
+                    <label>First Name</label>
+                    <input type="text">
+                </div>
+                <div class="input-group">
+                    <label>Middle Initial</label>
+                    <input type="text">
+                </div>
+                <div class="input-group">
+                    <label>Block</label>
+                    <input type="text">
+                </div>
+                <div class="input-group">
+                    <label>Adviser</label>
+                    <input type="text">
+                </div>
+                <div class="input-group">
+                    <label>Academic Year</label>
+                    <input type="text">
+                </div>
+                <div class="input-group">
+                    <label>Semester</label>
+                    <input type="text">
+                </div>
+                <button type="button" class="btn primary" onclick="navigateTo('main-page')">Submit</button>
+            </form>
+            <button class="btn secondary" onclick="navigateTo('moa-validation')">MOA Validation</button>
+        </div>
+    </section>
+
+    <!-- MOA Validation Page -->
+    <section id="moa-validation" class="page hidden">
+        <div class="container">
+            <img src="./logo/logo.png" alt="NEU Logo" class="logo">
+            <h2>MOA Validation</h2>
+            <form onsubmit="return false;">
+                <div class="input-group">
+                    <label for="company-name">Enter Company Name:</label>
+                    <input type="text" id="company-name" placeholder="Enter company name">
+                </div>
+                <button type="button" class="btn primary">Validate</button>
+                <button type="button" class="btn secondary" onclick="navigateTo('student-info')">Back</button>
+            </form>
+        </div>
+    </section>
+</body>
+</html>
