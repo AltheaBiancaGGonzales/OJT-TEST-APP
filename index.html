@@ -17,7 +17,7 @@
         </div>
     </section>
 
-    <!-- Welcome Page (new) -->
+    <!-- Welcome Page -->
     <section id="welcome-page" class="page hidden">
         <div class="container">
             <img src="./logo/logo.png" alt="NEU Logo" class="logo">
@@ -27,16 +27,22 @@
         </div>
     </section>
 
-    <!-- Main Page -->
+    <!-- Main Page (Updated) -->
     <section id="main-page" class="page hidden">
         <div class="container">
             <img src="./logo/logo.png" alt="NEU Logo" class="logo">
-            <h2 id="userName">Welcome</h2>
-            <p id="userEmail"></p>
-            <img id="userProfilePicture" class="profile-pic" alt="User Profile Picture" />
-            <button id="logoutButton" class="btn secondary">Logout</button>
+            <div class="button-group">
+                <button class="btn primary" onclick="navigateTo('upload-requirements')">Upload Requirements</button>
+                <button class="btn primary" onclick="navigateTo('student-info')">Enter Student Info</button>
+            </div>
+            <button class="btn secondary">Generate Endorsement Letter</button>
         </div>
     </section>
+
+    <script src="scripts.js" type="module"></script>
+</body>
+</html>
+
 
     <!-- Upload Requirements Page -->
     <section id="upload-requirements" class="page hidden">
