@@ -1,6 +1,6 @@
 // Import the functions you need from the Firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 // Import custom functions
 import { signInWithGoogle } from "./GoogleAuth.js";
@@ -22,38 +22,25 @@ const auth = getAuth(app);
 // Function to navigate between pages
 function navigateTo(pageId) {
     document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
-    const page = document.getElementById(pageId);
-    if (page) {
-        page.classList.remove('hidden');
-    }
+    document.getElementById(pageId).classList.remove('hidden');
 }
 
 // Update user profile in UI
 function updateUserProfile(user) {
-    const userNameElement = document.getElementById("userName");
-    const userEmailElement = document.getElementById("userEmail");
-    const userProfilePictureElement = document.getElementById("userProfilePicture");
-
-    if (userNameElement) userNameElement.textContent = `Welcome, ${user.displayName}`;
-    if (userEmailElement) userEmailElement.textContent = user.email;
-    if (userProfilePictureElement) userProfilePictureElement.src = user.photoURL || "./logo/default-profile.png";
-
+    document.getElementById("userName").textContent = `Welcome, ${user.displayName}`;
+    document.getElementById("userEmail").textContent = user.email;
+    document.getElementById("userProfilePicture").src = user.photoURL || "./logo/default-profile.png";
     navigateTo("main-page");
 }
 
 // Attach event listener to the Google sign-in button
 document.getElementById("googleSignInButton").addEventListener("click", async () => {
-    try {
-        const user = await signInWithGoogle();
+    const user = await signInWithGoogle();
 
-        if (user) {
-            updateUserProfile(user);
-        } else {
-            alert("Please use your institutional email (@neu.edu.ph) to sign in.");
-        }
-    } catch (error) {
-        console.error("Error signing in with Google:", error);
-        alert("An error occurred during sign-in. Please try again.");
+    if (user) {
+        updateUserProfile(user);
+    } else {
+        alert("Please use your institutional email (@neu.edu.ph) to sign in.");
     }
 });
 
@@ -64,4 +51,13 @@ onAuthStateChanged(auth, (user) => {
     } else {
         navigateTo("login-page");
     }
+});
+
+// Logout functionality
+document.getElementById("logoutButton").addEventListener("click", () => {
+    signOut(auth).then(() => {
+        navigateTo("login-page");
+    }).catch((error) => {
+        console.error("Error logging out:", error);
+    });
 });
