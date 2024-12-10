@@ -22,7 +22,7 @@ const provider = new GoogleAuthProvider();
 // Navigation function
 function navigateTo(pageId) {
     document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
-    document.getElementById(pageId).classList.remove('hidden');
+    document.getElementById(pageId).classList
 }
 
 // Validate institutional email
