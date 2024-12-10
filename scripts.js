@@ -1,11 +1,11 @@
-// Import the functions you need from the Firebase SDKs
+// Import necessary Firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 // Import custom functions
 import { signInWithGoogle } from "./GoogleAuth.js";
 
-// Updated Firebase configuration
+// Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAxxT0jppPPBIjKSKEk7IEuStIkRDvR3rk",
     authDomain: "ojt-test-app.firebaseapp.com",
@@ -33,15 +33,20 @@ function updateUserProfile(user) {
     navigateTo("main-page");
 }
 
-// Attach event listener to the Google sign-in button
+// Handle Google Sign-In
 document.getElementById("googleSignInButton").addEventListener("click", async () => {
     const user = await signInWithGoogle();
 
     if (user) {
-        updateUserProfile(user);
+        navigateTo("welcome-page");
     } else {
         alert("Please use your institutional email (@neu.edu.ph) to sign in.");
     }
+});
+
+// Handle "Next" button in the Welcome Page
+document.getElementById("nextButton").addEventListener("click", () => {
+    navigateTo("main-page");
 });
 
 // Monitor authentication state
