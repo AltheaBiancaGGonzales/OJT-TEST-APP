@@ -1,8 +1,3 @@
-// Import Firebase functions
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-
 // Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyCsfIKXHr0AY8RneP2VWpjdR038aMNkCsw",
@@ -19,61 +14,75 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// Navigation function
+// Helper function to navigate between pages
 function navigateTo(pageId) {
     document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
     document.getElementById(pageId).classList.remove('hidden');
 }
 
-// Google sign-in function
-document.getElementById("googleSignInButton").addEventListener("click", async () => {
-    try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        const userRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(userRef);
+// Function to check if email is institutional
+function isInstitutionalEmail(email) {
+    const univDomain = /@neu\.edu\.ph$/;
+    return univDomain.test(email);
+}
 
-        if (!docSnap.exists()) {
-            await setDoc(userRef, {
-                name: user.displayName,
-                email: user.email,
-                profilePicture: user.photoURL
-            });
+// Function to update user profile in the UI
+function updateUserProfile(user) {
+    document.getElementById("userName").textContent = `Welcome, ${user.displayName}`;
+    document.getElementById("userEmail").textContent = user.email;
+    document.getElementById("userProfilePicture").src = user.photoURL || "./logo/default-profile.png";
+}
+
+// Function to handle Google sign-in
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("googleSignInButton")?.addEventListener("click", async () => {
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+
+            if (isInstitutionalEmail(user.email)) {
+                const userRef = doc(db, "users", user.uid);
+                const userDoc = await getDoc(userRef);
+
+                if (!userDoc.exists()) {
+                    await setDoc(userRef, {
+                        displayName: user.displayName,
+                        institutional_email: user.email,
+                        photoUrl: user.photoURL,
+                        createdAt: new Date(),
+                        role: "Student",
+                    });
+                }
+
+                updateUserProfile(user);
+                navigateTo('main-page');
+            } else {
+                alert("Please use your institutional email (@neu.edu.ph) to sign in.");
+                signOut(auth);
+            }
+        } catch (error) {
+            console.error("Error during sign-in:", error);
+            alert("Error signing in: " + error.message);
         }
+    });
+});
 
-        // Set user information
-        document.getElementById('userName').innerText = `Welcome, ${user.displayName}`;
-        document.getElementById('userEmail').innerText = user.email;
-        document.getElementById('userProfilePicture').src = user.photoURL;
-
-        // Navigate to main page
-        navigateTo('main-page');
-    } catch (error) {
-        console.error(error);
-        alert("Error signing in: " + error.message);
+// Monitor authentication state
+onAuthStateChanged(auth, (user) => {
+    if (user && isInstitutionalEmail(user.email)) {
+        updateUserProfile(user);
+        navigateTo("main-page");
+    } else {
+        navigateTo("login-page");
     }
 });
 
 // Logout function
 function logout() {
     signOut(auth).then(() => {
-        navigateTo('login-page');
+        navigateTo("login-page");
     }).catch((error) => {
-        console.error(error);
+        console.error("Error during sign-out:", error);
         alert("Error logging out: " + error.message);
     });
 }
-
-// Watch for authentication state changes
-onAuthStateChanged(auth, user => {
-    if (user) {
-        // User is signed in
-        document.getElementById('userName').innerText = `Welcome, ${user.displayName}`;
-        document.getElementById('userEmail').innerText = user.email;
-        document.getElementById('userProfilePicture').src = user.photoURL;
-        navigateTo('main-page');
-    } else {
-        // No user is signed in
-        navigateTo('login-page');
-    }
-});
