@@ -31,6 +31,17 @@ function isInstitutionalEmail(email) {
     return univDomain.test(email);
 }
 
+// Event listener for Google sign-in button
+document.getElementById("googleSignInButton").addEventListener("click", async () => {
+    const user = await signInWithGoogle(); // Use the imported function
+
+    if (user) {
+        updateUserProfile(user); // Update the profile UI if user is valid
+    } else {
+        alert("Please use your institutional email (@neu.edu.ph) to sign in."); // Alert if email is invalid
+    }
+});
+
 // Update user profile in UI
 function updateUserProfile(user) {
     document.getElementById("userName").textContent = `Welcome, ${user.displayName}`;
@@ -77,6 +88,7 @@ onAuthStateChanged(auth, (user) => {
         navigateTo("login-page");
     }
 });
+
 
 // Log out function
 function logout() {
